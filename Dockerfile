@@ -8,7 +8,7 @@ ARG TAG=16
 
 # build
 COPY ["compile.sh","extra_packages.lst","/tmp/"]
-RUN /tmp/compile.sh
+RUN chmod a+x /tmp/compile.sh && /tmp/compile.sh
 
 # copy init files
 COPY ["initdb/*", "/docker-entrypoint-initdb.d/"]
