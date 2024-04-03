@@ -1,0 +1,21 @@
+name: Docker Image CI
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+env:
+  DISTRO: bookworm
+  TAG: 16
+  
+jobs:
+
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v3
+    - name: Build the Docker image
+      run: docker build --build-arg TAG=$TAG --build-arg BASE_IMAGE=${TAG}-${DISTRO} . --file Dockerfile --tag tommi2day/postgresql-debugger:${TAG}-${DISTRO}-$(date +%s)
