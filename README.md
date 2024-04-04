@@ -12,9 +12,18 @@ This runs on top of the [official Postgres image](https://hub.docker.com/_/postg
 based on Dockerfile and scripts provided on https://github.com/ng-galien/idea-plpgdebugger/tree/233/docker
 
 ### build
-see [build_all_local.sh](build_all_local.sh). This will create Images for Postgresql 14,15,16
 
-if you like to install non-default extension packages (such as pgaudit), add them to the extra_packages.lst file similar. `${TAG}` will be replaced by the build argument. Dont forget to add your `create extension` statement to the init files (see below)
+```
+PG_IMAGE=postgresql-debugger
+DISTRO=bookworm
+DOCKER_USER=tommi2day
+PG_VERSION=16
+docker build --build-arg "VERSION=${PG_VERSION}" --build-arg "DISTRO=${DISTRO}" --build-arg "INITDB=./initdb" -t "$DOCKER_USER/$PG_IMAGE:${PG_VERSION}" .
+```
+This will create Images for Postgresql 16 and init scripts in `./initdb`. see [build_all_local.sh](build_all_local.sh). 
+
+
+if you like to install non-default extension packages (such as pgaudit), add them to the extra_packages.lst file similar. `${VERSION}` will be replaced by the build argument. Dont forget to add your `create extension` statement to the init files (see below)
 
 
 ### use
