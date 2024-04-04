@@ -6,8 +6,8 @@ DISTRO=bookworm
 DOCKER_USER=${DOCKER_USER:-tommi2day}
 VERSIONS="14 15 16"
 for PG_VERSION in $VERSIONS; do
-    echo "Building $PG_IMAGE:$PG_VERSION"
-    docker build --build-arg "TAG=$PG_VERSION" --build-arg "BASE_IMAGE=${PG_VERSION}-${DISTRO}" -t "$DOCKER_USER/$PG_IMAGE:$PG_VERSION" .
+        echo "Building ${PG_IMAGE}:${PG_VERSION}"
+        docker build --build-arg "VERSION=${PG_VERSION}" --build-arg "DISTRO=${DISTRO}" --build-arg "INITDB=./initdb" -t "$DOCKER_USER/$PG_IMAGE:${PG_VERSION}" .
 done
 docker tag "$DOCKER_USER/$PG_IMAGE:$PG_VERSION" "$DOCKER_USER/$PG_IMAGE:latest"
 if [ "$PUSH" != "" ]; then

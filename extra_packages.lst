@@ -1,3 +1,8 @@
-postgresql-${TAG}-pgaudit
+# pgaudit
+postgresql-${VERSION}-pgaudit
+# passwordpolicy
+libpam-pwquality
+libcrack2
+# helper
 procps
 vim

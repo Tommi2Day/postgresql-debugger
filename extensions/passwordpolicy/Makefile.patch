@@ -1,0 +1,18 @@
+diff --git a/Makefile b/Makefile
+index aff9939..c2ad918 100644
+--- a/Makefile
++++ b/Makefile
+@@ -10,9 +10,10 @@ DATA = passwordpolicy--1.0.0.sql
+ REGRESS_OPTS  = --inputdir=test --outputdir=test --load-extension=passwordpolicy --user=postgres
+ REGRESS = passwordpolicy_test
+ 
+-PG_CPPFLAGS = -DUSE_CRACKLIB '-DCRACKLIB_DICTPATH="/usr/lib/cracklib_dict"'
++#PG_CPPFLAGS = -DUSE_CRACKLIB '-DCRACKLIB_DICTPATH="/usr/lib/cracklib_dict"'
++PG_CPPFLAGS = -DUSE_CRACKLIB '-DCRACKLIB_DICTPATH="/var/cache/cracklib/cracklib_dict"'
+ SHLIB_LINK = -lcrack
+ 
+ PG_CONFIG = pg_config
+ PGXS := $(shell $(PG_CONFIG) --pgxs)
+-include $(PGXS)
+\ No newline at end of file
++include $(PGXS)
