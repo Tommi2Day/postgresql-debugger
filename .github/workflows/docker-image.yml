@@ -4,7 +4,6 @@ on:
   push:
     branches: [ "main" ]
 env:
-  DISTRO: bookworm
   PG_IMAGE: postgresql-debugger
   INITDB: ./initdb
 jobs:
@@ -12,6 +11,7 @@ jobs:
     strategy:
       matrix:
         version: [14, 15, 16]
+        distribution: [ bullseye, bookworm ]
     runs-on: ubuntu-latest
     steps:
     - name: Checkout
@@ -31,11 +31,20 @@ jobs:
         context: .
         build-args: |
               VERSION=${{ matrix.version }}
-              DISTRO=${{ env.DISTRO }}
+              DISTRO=${{ matrix.distribution }}
               INITDB=${{ env.INITDB }}
         file: Dockerfile
         push: true
-        tags: | 
-              ${{ secrets.DOCKERHUB_USERNAME }}/${{ env.PG_IMAGE }}:${{ matrix.version }}-${{ env.DISTRO }}
-              ${{ secrets.DOCKERHUB_USERNAME }}/${{ env.PG_IMAGE }}:${{ matrix.version }}
-      
+        tags: docker.io/${{ secrets.DOCKERHUB_USERNAME }}/${{ env.PG_IMAGE }}:${{ matrix.version }}-${{ matrix.distribution }}
+    - name: push bookworm to version
+      if: matrix.distribution == 'bookworm'
+      run: |
+        docker pull docker.io/${{ secrets.DOCKERHUB_USERNAME }}/${{ env.PG_IMAGE }}:${{ matrix.version }}-${{ matrix.distribution }}
+        docker tag docker.io/${{ secrets.DOCKERHUB_USERNAME }}/${{ env.PG_IMAGE }}:${{ matrix.version }}-${{ matrix.distribution }} docker.io/${{ secrets.DOCKERHUB_USERNAME }}/${{ env.PG_IMAGE }}:${{ matrix.version }}
+        docker push  docker.io/${{ secrets.DOCKERHUB_USERNAME }}/${{ env.PG_IMAGE }}:${{ matrix.version }}
+    - name: tag and push latest
+      if: matrix.version == 16 && matrix.distribution == 'bookworm'
+      run: |
+        docker pull docker.io/${{ secrets.DOCKERHUB_USERNAME }}/${{ env.PG_IMAGE }}:${{ matrix.version }}-${{ matrix.distribution }}
+        docker tag docker.io/${{ secrets.DOCKERHUB_USERNAME }}/${{ env.PG_IMAGE }}:${{ matrix.version }}-${{ matrix.distribution }} docker.io/${{ secrets.DOCKERHUB_USERNAME }}/${{ env.PG_IMAGE }}:latest
+        docker push docker.io/${{ secrets.DOCKERHUB_USERNAME }}/${{ env.PG_IMAGE }}:latest
